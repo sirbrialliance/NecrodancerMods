@@ -2,14 +2,17 @@ local LevelGenerator = require "necro.game.level.LevelGenerator"
 local CurrentLevel = require "necro.game.level.CurrentLevel"
 local Object = require "necro.game.object.Object"
 local CustomEntities = require "necro.game.data.CustomEntities"
+local DungeonLoader = require "necro.game.data.level.DungeonLoader"
 
-local CustomMusic = require "necro.game.data.resource.CustomMusic"
+local LevelUtil = require "DungeonModes.LevelUtil"
 
-local util = require "DungeonModes.util"
+-- DungeonLoader.loadFromFile(fileName, levelNumber)
 
-event.levelGenerate.add("GenerateLevel", {order="", sequence = 10}, function(level)
-	-- print("levelGenerate", level)
-	if level.options.modeID ~= LevelGenerator.Type.DungeonModes_TheDepths then return end
+event.levelGenerate.add("GenerateLevel", {order="", sequence = -10}, function(level)
+	print("levelGenerate", level)
+	if level.options.type ~= "DungeonModes_Standard" then return end
+
+	print("Generate level for options:", level.options)
 
 	-- Level.Data, see https://vortexbuffer.com/synchrony/docs/modules/necro.game.level.LevelLoader/#class-Level.Data
 	level.level = {
@@ -74,7 +77,7 @@ event.levelGenerate.add("GenerateLevel", {order="", sequence = 10}, function(lev
 
 	}
 
-	print("gen level", level)
+	-- print("gen level", level)
 
 
 	-- level.options.isFinal = false
