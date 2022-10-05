@@ -1,60 +1,15 @@
-local Event = require "necro.event.Event"
 local LevelGenerator = require "necro.game.level.LevelGenerator"
 local CurrentLevel = require "necro.game.level.CurrentLevel"
 local Object = require "necro.game.object.Object"
 local CustomEntities = require "necro.game.data.CustomEntities"
-local Tile = require "necro.game.tile.Tile"
-local TileTypes = require "necro.game.tile.TileTypes"
 
-print("-- Dungeon Modes Startup --")
+local CustomMusic = require "necro.game.data.resource.CustomMusic"
 
-LevelGenerator.Type.extend("DungeonModes_HundredFloors", "DungeonModes_HundredFloors")
+local util = require "DungeonModes.util"
 
-event.lobbyGenerate.add("AddLobbyModes", {order="medic", sequence = 10}, function(ev)
-	Object.spawn("LabelBasic", -3, 4, {
-		worldLabel = {
-			text = "100 Floors",
-		},
-	})
-
-	local stairsObj = Object.spawn("TriggerStartRun", -3, 4, {
-		trapStartRun = {
-			mode = "DungeonModes_HundredFloors"
-		},
-	})
-
-	local stairsID = TileTypes.lookUpTileID("Stairs", 0)
-	Tile.set(stairsObj.position.x, stairsObj.position.y, stairsID)
-
-	print("tweaked", CurrentLevel.isLobby())
-
-end)
-
-event.levelSequenceUpdate.add("LSU", {order="initSeed", sequence = 1}, function(ev)
-	-- print("levelSequenceUpdate", ev)
-	if ev.options.modeID ~= LevelGenerator.Type.DungeonModes_HundredFloors then
-		return
-	end
-
-	for levelNum = 1, 10 do
-		table.insert(ev.sequence, {
-			depth = levelNum,
-			floor = 1,
-			type = "DungeonModes_Standard",--I guess we could still call on the default generator here....
-			zone = 1,
-		})
-	end
-
-	-- print("made a sequence", ev)
-end)
-
--- event.levelSequenceUpdate.add("LSU2", {order="levelIndices", sequence = 100}, function(ev)
--- 	print("levelSequenceUpdate2", ev)
--- end)
-
-event.levelGenerate.add("LevelGenerate", {order="", sequence = 10}, function(level)
+event.levelGenerate.add("GenerateLevel", {order="", sequence = 10}, function(level)
 	-- print("levelGenerate", level)
-	if level.options.modeID ~= LevelGenerator.Type.DungeonModes_HundredFloors then return end
+	if level.options.modeID ~= LevelGenerator.Type.DungeonModes_TheDepths then return end
 
 	-- Level.Data, see https://vortexbuffer.com/synchrony/docs/modules/necro.game.level.LevelLoader/#class-Level.Data
 	level.level = {
@@ -111,7 +66,7 @@ event.levelGenerate.add("LevelGenerate", {order="", sequence = 10}, function(lev
 		},
 
 		music = {
-      type = "lobby"
+      type = "training"
     },
 
 		playerOptions = {},
@@ -129,4 +84,14 @@ end)
 
 -- event.levelLoad.add("TestEvent", {order = "currentLevel", sequence = 2}, function(level)
 -- 	-- print("handler did run", level.__name)
+-- end)
+
+-- event.musicTrack.add("TestMusicEvent", {order = "customMusic", sequence = 1}, function(ev)
+-- 	-- print("event.musicTrack", ev)
+
+-- 	local lists = CustomMusic.listPlaylists()
+-- 	-- print("Custom playlists", CustomMusic.listPlaylists())
+-- 	-- print("Custom playlists", CustomMusic.edit(lists[1]))
+-- 	print("Custom playlists", CustomMusic.readMetadata(lists[1]))
+-- 	-- CustomMusic.edit opens the edit GUI
 -- end)

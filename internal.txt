@@ -3,9 +3,78 @@ Proto:
 - xx Add 100floor mode to lobby
 - xx Generate each floor with code
 
+- ww Custom music on a floor
+	- xx can't do full custom with music = {type="Mod_song"},
+		- "Failed to open streaming audio file 'ext/music/SomeMod_someSong.ogg'"
+		- doens't even search mod directory
+		- it does work if I manyually copy the music to the game's music folder...not a thing a mod can or shoudl do, though.
+	- xx Custom playlists would be...cumbersome...and I may have to know the actual mod path on the filesystem. ewww.
 
+- Save file format?
+
+- Test custom mixed run (vanilla and modded levels)
 
 
 Ideas:
-- Areana level filled with monsters, but walls seperate each wave, and the walls are torn down at timed intervals
-	- imagine concentric circles
+
+- Dungeon crawler mode: The Depths
+	- Premise
+		- Start on floor 1, try to get to 100.
+		- Boss floors every 5 or 10, or randomly. But harder bosses.
+		- Difficulty ramps up with depth.
+	- Party dynamics idea:
+		- If a player dies, you must pay to revive them.
+		- If a player has much more item value than another (excluding start items), they must give to other players until value is more equal.
+		- Can pay to revive players while still in a level.
+		- Can't afford a revive anyway? Game over.
+		- Swap with uncontrolled chars by bumping into them
+		- Shared currency diamonds, private currency coins.
+		- Revives cost diamonds, can sell stuff for diamonds if you can afford a revive.
+		- Must unlock all chars on a level before continuing (if you trapdoor, they show up later mostly dead)
+		- Revive and heal spells
+	- Balance (long run equippment overrun)
+		- Various obstacles that require you to decide what to keep and what to leave behind.
+	- Maybe pull a bunch of enemy and items in as mod dependencies. (At least support thir enemy replacement if loaded.)
+	- More music
+
+	- Room types:
+		- Cave-in: vanilla level collapses over time, killing any player buried
+		- Rest/hot springs: refill HP, maybe a small shop with health items
+		- Player balance: players can't continue until equipment value is roughly the same value, provide unequip traps
+		- Boss: vanilla, or vanilla with extras
+		- Enemy waves: walls hold back a massive horde of enemies and walls slowly disappear over time
+			- Must kill all to unlock stairs
+		- Coffin rush: many spawner coffins, destroy all coffins to unlock stairs
+		- Vanilla level: plain or maybe with some level gen tweaks
+		- Item gates: players must choose equipped item slots to "sell"/sacrifice to open the doors
+			- Scale with players, and may be good to follow with an equippment balance shortly
+		- Trap dungeon: mostly traps/fireballs/etc.; you have to maneuver through; only minor enemies)
+		- Character swap: Each player must pick pick 1 of 3-4 random (including modded) characters to continue the run
+		- Thief rush: So. Much. Stealing.
+			- Rare.
+		- Dragons and monkeys: Because what's more fun than a room full of dragons and monkeys?
+		- Prefab: random level from a curated list
+		- Other ideas: open lit field, tomb of traps, lava land, mazes, confusion or shock energy waves
+
+
+	- Misc ideas:
+		- Maybe have to switch to another character for a few levels and then rejoin group
+		- Character leveling/rpg elements?
+		- Can diamond buy a shortcut down to next floor, or several down
+		- Probably all levels collapse in time...or the dungeon is sinking or something
+
+	- Look into making it a custom mode shrine instead?
+
+Modding API notes:
+	- Level.Data's tile numbers: 0 = void, 1 = first item in tileNames
+	- Level.Data's bounds is x/y/w/h, not x1/y1/x2/y2
+	- CustomMusic.edit opens the edit GUI
+	- CustomMusic.readMetadata: {
+		author = "exampleuser",
+		displayName = "Mod test playlist",
+		songFileNames = { "C:\\blahblahblah\\music\\song1.ogg" }
+	}
+
+	- Custom modes: extraMode.Type.extend
+	- To include file: have the included return something, then require "ModPrefix.filenamebase"
+	- Probably should restart the game anytime you change mod.json, doens't seem to live reload

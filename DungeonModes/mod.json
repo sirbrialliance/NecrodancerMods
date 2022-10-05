@@ -6,7 +6,7 @@
 	"description": "More gameplay modes.",
 	"author": "sirbrialliance",
 	"dependencies": {},
-	"api": {"scriptPath":""},
+	"api": {"scriptPath":"scripts"},
 	"icon": "DungeonModesIcon.png",
 	"banner": "DungeonModesBanner.png",
 	"tags": [],
