@@ -1,0 +1,14 @@
+{
+	"namespace": "DungeonModes",
+	"displayName": "Dungeon Mode(s)",
+	"version": "0.0.1",
+	"synchronyVersion": "3.1.4",
+	"description": "More gameplay modes.",
+	"author": "sirbrialliance",
+	"dependencies": {},
+	"api": {"scriptPath":""},
+	"icon": "DungeonModesIcon.png",
+	"banner": "DungeonModesBanner.png",
+	"tags": [],
+	"name": "DungeonModes"
+}

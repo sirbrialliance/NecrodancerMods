@@ -1,0 +1,11 @@
+
+Proto:
+- xx Add 100floor mode to lobby
+- xx Generate each floor with code
+
+
+
+
+Ideas:
+- Areana level filled with monsters, but walls seperate each wave, and the walls are torn down at timed intervals
+	- imagine concentric circles
