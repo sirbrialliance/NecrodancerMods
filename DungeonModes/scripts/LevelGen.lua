@@ -83,19 +83,17 @@ end)
 
 event.levelGenerate.add("GeneratePrefab", {order="", sequence = -10}, function(level)
 	if level.options.type ~= "DungeonModes_Prefab" then return end
-	-- print("Generate level for options:", level.options)
+	-- print("Generate level for options:", level)
 
-	local fileData = DungeonFile.loadFromFile("mods/DungeonModes/dungeons/LevelTest.necrolevel")
-	print("Loaded level data", fileData)
-
-	local levelData = fileData.levels[1]
-
+	local levelData = LevelUtil.GetPrefabLevel(
+		level.options.DungeonModes_levelSet,
+		level.options.DungeonModes_prefab
+	)
 
 	utils.mergeTablesRecursive(levelData, level.options)
 	level.level = levelData
 
-
-	print("Level result:", level)
+	-- print("Level result:", level)
 
 end)
 

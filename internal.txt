@@ -2,17 +2,18 @@
 Proto:
 - xx Add 100floor mode to lobby
 - xx Generate each floor with code
-
 - ww Custom music on a floor
 	- xx can't do full custom with music = {type="Mod_song"},
 		- "Failed to open streaming audio file 'ext/music/SomeMod_someSong.ogg'"
 		- doens't even search mod directory
 		- it does work if I manyually copy the music to the game's music folder...not a thing a mod can or shoudl do, though.
 	- xx Custom playlists would be...cumbersome...and I may have to know the actual mod path on the filesystem. ewww.
+- xx Test custom mixed run (vanilla and modded levels)
 
-- Save file format?
+- MVP
+	- A few prebuilt dungeons
+	- full set of levels/bosses for the run
 
-- Test custom mixed run (vanilla and modded levels)
 
 
 Ideas:

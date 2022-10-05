@@ -16,10 +16,14 @@ event.levelSequenceUpdate.add("DepthsLevelSequence", {order="initSeed", sequence
 
 	-- for levelNum = 1, 10 do ... end
 
+	print("Wave levels:", LevelUtil.GetMatchingPrefabs("Depths", "Wave_"))
+
 	LevelUtil.SequenceAdd(ev.sequence, {
 		depth = 1,
 		floor = 1,
 		type = "DungeonModes_Prefab",
+		DungeonModes_levelSet = "Depths",
+		DungeonModes_prefab = "Start",
 		zone = 1,
 	})
 
