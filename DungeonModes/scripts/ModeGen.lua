@@ -1,6 +1,13 @@
 local LevelGenerator = require "necro.game.level.LevelGenerator"
 
-event.levelSequenceUpdate.add("GenerateLevelSequence", {order="initSeed", sequence = 1}, function(ev)
+print("-- Dungeon Modes Startup --")
+
+LevelGenerator.Type.extend("DungeonModes_TheDepths", "DungeonModes_TheDepths")
+
+--[[
+	Determines the levels you'll encounter during a depths run
+]]--
+event.levelSequenceUpdate.add("DepthsLevelSequence", {order="initSeed", sequence = 1}, function(ev)
 	-- print("levelSequenceUpdate", ev)
 	if ev.options.modeID ~= LevelGenerator.Type.DungeonModes_TheDepths then
 		return
