@@ -3,13 +3,14 @@ local CurrentLevel = require "necro.game.level.CurrentLevel"
 local Object = require "necro.game.object.Object"
 local CustomEntities = require "necro.game.data.CustomEntities"
 local DungeonLoader = require "necro.game.data.level.DungeonLoader"
+local FileIO = require "system.game.FileIO"
+local DungeonFile = require "necro.client.custom.DungeonFile"
+local utils = require "system.utils.Utilities"
 
 local LevelUtil = require "DungeonModes.LevelUtil"
 
--- DungeonLoader.loadFromFile(fileName, levelNumber)
-
-event.levelGenerate.add("GenerateLevel", {order="", sequence = -10}, function(level)
-	print("levelGenerate", level)
+event.levelGenerate.add("GenerateStandard", {order="", sequence = -10}, function(level)
+	-- print("levelGenerate", level)
 	if level.options.type ~= "DungeonModes_Standard" then return end
 
 	print("Generate level for options:", level.options)
@@ -25,8 +26,8 @@ event.levelGenerate.add("GenerateLevel", {order="", sequence = -10}, function(le
 		seed = level.options.seed,
 
 		isProcedural = true,
-		isFinal = false,
-		isLoopFinal = false,
+		isFinal = level.options.isFinal,
+		isLoopFinal = level.options.isLoopFinal,
 
 		entities = {
 			{
@@ -78,23 +79,23 @@ event.levelGenerate.add("GenerateLevel", {order="", sequence = -10}, function(le
 	}
 
 	-- print("gen level", level)
-
-
-	-- level.options.isFinal = false
-	-- level.options.isLoopFinal = false
 end)
 
+event.levelGenerate.add("GeneratePrefab", {order="", sequence = -10}, function(level)
+	if level.options.type ~= "DungeonModes_Prefab" then return end
+	-- print("Generate level for options:", level.options)
 
--- event.levelLoad.add("TestEvent", {order = "currentLevel", sequence = 2}, function(level)
--- 	-- print("handler did run", level.__name)
--- end)
+	local fileData = DungeonFile.loadFromFile("mods/DungeonModes/dungeons/LevelTest.necrolevel")
+	print("Loaded level data", fileData)
 
--- event.musicTrack.add("TestMusicEvent", {order = "customMusic", sequence = 1}, function(ev)
--- 	-- print("event.musicTrack", ev)
+	local levelData = fileData.levels[1]
 
--- 	local lists = CustomMusic.listPlaylists()
--- 	-- print("Custom playlists", CustomMusic.listPlaylists())
--- 	-- print("Custom playlists", CustomMusic.edit(lists[1]))
--- 	print("Custom playlists", CustomMusic.readMetadata(lists[1]))
--- 	-- CustomMusic.edit opens the edit GUI
--- end)
+
+	utils.mergeTablesRecursive(levelData, level.options)
+	level.level = levelData
+
+
+	print("Level result:", level)
+
+end)
+
