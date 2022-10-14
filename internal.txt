@@ -88,6 +88,11 @@ Modding API notes:
 Team Status
 -------------------------------------------------------------------------
 
+- Things:
+	- Remote player died, no update on either device
+		- and go to next level and only one is alive?
+
+
 - Notes:
 	- Events:
 		- objectUnspectate when local player joins (entity, playerID)

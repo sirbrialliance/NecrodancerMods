@@ -47,6 +47,7 @@ end
 -- Updates HUD values and tells all players if someone is in the exit stairs,
 -- if they're the last standing, etc.
 local function updateDoomState()
+	local totalCount = 0
 	local alive = 0
 	local alivePlayers = {}
 	local dead = 0
@@ -64,26 +65,29 @@ local function updateDoomState()
 			table.insert(alivePlayers, player)
 		end
 
+		totalCount = totalCount + 1
 	end
 
 	-- print("states: ", alive, dead, inStairs)
 
-	if inStairs > 0 and not safeNotified then
-		notify(alivePlayers, "Safe!")
-		safeNotified = true
-	elseif inStairs == 0 and safeNotified then
-		notify(alivePlayers, "Not safe!")
-		safeNotified = false
-	end
+	if totalCount > 1 then
+		if inStairs > 0 and not safeNotified then
+			notify(alivePlayers, "Safe!")
+			safeNotified = true
+		elseif inStairs == 0 and safeNotified then
+			notify(alivePlayers, "Not safe!")
+			safeNotified = false
+		end
 
-	if alive == 1 and inStairs == 0 then
-		notify(alivePlayers, {
-			text="Last man standing!",
-			size=15,
-			duration=4,
-		})
-	end
+		if alive == 1 and inStairs == 0 then
+			notify(alivePlayers, {
+				text="Last man standing!",
+				size=15,
+				duration=4,
+			})
+		end
 
+	end
 
 	stateText = (
 		alive .. heartIconText .. " " ..
