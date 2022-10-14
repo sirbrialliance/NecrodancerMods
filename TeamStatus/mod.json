@@ -3,7 +3,7 @@
 	"displayName": "Team Status",
 	"version": "0.0.0",
 	"synchronyVersion": "3.1.5",
-	"description": "HUD and notifications that tell you how your teamates are faring, if anyone is in the exit stairs, and if you're the last man standing!",
+	"description": "HUD and notifications that tell you how your teammates are faring.\n\nIncludes notifications when the first player gets to the stairs (or a trapdoor) and if you become the last man standing!",
 	"author": "sirbrialliance",
 	"dependencies": {},
 	"api": {"scriptPath":""},
