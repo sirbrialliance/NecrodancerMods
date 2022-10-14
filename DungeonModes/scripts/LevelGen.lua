@@ -48,6 +48,11 @@ event.levelGenerate.add("GenerateStandard", {order="", sequence = -10}, function
 					value = 1344
 				}}
 			},
+			{
+				type = "DungeonModes_ReturnStairs",
+				x = 1, y = 1,
+				attributes = {}
+			},
 		},
 
 		segments = {{
@@ -57,8 +62,9 @@ event.levelGenerate.add("GenerateStandard", {order="", sequence = -10}, function
 				-- NB: 0 = void, 1 = first item in tileNames
 				1, 1, 1, 1, 1,
 				1, 2, 2, 2, 1,
-				1, 2, 3, 2, 1,
+				-- 1, 2, 3, 2, 1,
 				1, 2, 2, 2, 1,
+				1, 2, 2, 3, 1,
 				1, 1, 1, 1, 1,
 			},
 		}},

@@ -42,6 +42,13 @@ event.levelSequenceUpdate.add("DepthsLevelSequence", {order="initSeed", sequence
 		zone = 1,
 	})
 
+	LevelUtil.SequenceAdd(ev.sequence, {
+		depth = 1,
+		floor = 1,
+		type = "DungeonModes_Standard",
+		zone = 1,
+	})
+
 	-- print("made a sequence", ev)
 end)
 
