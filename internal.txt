@@ -1,3 +1,6 @@
+-------------------------------------------------------------------------
+Dungeon Modes
+-------------------------------------------------------------------------
 
 Proto:
 - xx Add 100floor mode to lobby
@@ -79,3 +82,32 @@ Modding API notes:
 	- Custom modes: extraMode.Type.extend
 	- To include file: have the included return something, then require "ModPrefix.filenamebase"
 	- Probably should restart the game anytime you change mod.json, doens't seem to live reload
+
+
+-------------------------------------------------------------------------
+Team Status
+-------------------------------------------------------------------------
+
+- Notes:
+	- Events:
+		- objectUnspectate when local player joins (entity, playerID)
+		- objectSpectate when local player leaves (entity, playerID)
+		- objectDeath (entity, killer)
+		- Generally: objectDeath or objectDelete preceeds objectDespawn, but players don't despawn when they die
+		- objectDescentEnd (..., entity)
+	- Player dead? player.killable.dead
+		- ...but also spectator.active?
+		- gameObject.active?
+	- In stairs?
+		- descent.active
+		- descentDamageImmunity.active
+		- targetable.active and position is stairs?
+	- List resources:
+		- I guess "ext/{path}" corrosponds to "{installDir}/data/{path}"
+		- print("dirs", FileIO.listFiles("", FileIO.List.RECURSIVE, FileIO.List.DIRECTORIES))
+		- print("files", FileIO.listFiles("ext/gui", FileIO.List.RECURSIVE, FileIO.List.FILES))
+
+
+	- todo: test with MP (I guess you MUST have the mod on mod.io, local equal mod copies isn't enough)
+		- serverChangePlayerID may be useful
+

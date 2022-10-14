@@ -1,0 +1,14 @@
+{
+	"namespace": "TeamStatus",
+	"displayName": "Team Status",
+	"version": "0.0.0",
+	"synchronyVersion": "3.1.5",
+	"description": "HUD and notifications that tell you how your teamates are faring, if anyone is in the exit stairs, and if you're the last man standing!",
+	"author": "sirbrialliance",
+	"dependencies": {},
+	"api": {"scriptPath":""},
+	"icon": "TeamStatusIcon.png",
+	"banner": "TeamStatusBanner.png",
+	"tags": [],
+	"name": "TeamStatus"
+}
