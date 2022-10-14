@@ -13,7 +13,7 @@ Proto:
 	- xx Custom playlists would be...cumbersome...and I may have to know the actual mod path on the filesystem. ewww.
 - xx Test custom mixed run (vanilla and modded levels)
 
-- Can you go back to an earlier level?
+- xx Can you go back to an earlier level?
 	- xx LevelTransition.switchToLevel doesn't seem to exist (anymore?)
 	- xx StateControl.seekRelative(-1) doesn't appear to do anything?
 	- StateControl.changeLevel
@@ -21,16 +21,45 @@ Proto:
 		- Does nothing or hangs if I hand it a level that doens't exist or I haven't been to yet
 		- If I go back, I get a similar level, with different details (same walls, differnt items and such)
 			- Farm free store items with non-money chars...
-
 	- LevelSequence.generate/update?
+- xx Let you swap characters
+	- xx add a trapSelectCharacter to some stairs?
 
-- Let you swap characters
-	- add a trapSelectCharacter to some stairs?
+
+
 
 - MVP
 	- A few prebuilt dungeons
 	- full set of levels/bosses for the run
 
+
+Plans (the depths):
+	- xx debug invincible
+	- namespace change? (DDM)
+	- Pull levels from random pool
+		- Vanilla, to start
+		- Then tweak results to be harder as you go deeper
+	- Add waves room
+	- Get on with it
+		- music gets faster when things are boring:
+			- anyone dead/descending for longer than a minute
+			- 50%+ players dead/descending
+	- Add death payment room
+		- Payment rooms are safe+no beat
+			- do that by fiddling with components on all the players?
+		- track all player deaths
+		- charge them for it
+		- Go back option
+	- Add equippment payment room
+		- Go back option
+	- Add curse room
+		- Players must take on one of the offerend curses to continue
+		- curses are "player rules", like taking damage on a missed beat
+			- rhythmSkipEveryNth
+			- extraModePhasingInnateItem
+			- grooveChainInflictDamageOnDrop
+	- Add balance room
+		- player equippment cost must be roughly equal to continue, unequip provided
 
 
 Ideas:
@@ -56,6 +85,7 @@ Ideas:
 	- More music
 
 	- Room types:
+		- (We do have Random.noise2)
 		- Cave-in: vanilla level collapses over time, killing any player buried
 		- Rest/hot springs: refill HP, maybe a small shop with health items
 		- Player balance: players can't continue until equipment value is roughly the same value, provide unequip traps

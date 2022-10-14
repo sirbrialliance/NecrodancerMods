@@ -94,6 +94,9 @@ event.trapTrigger.add("LevelRewind", {order="descend", filter= "DungeonModes_tra
 	print("Trap stairs triggered.", ev)
 	-- StateControl.changeLevel takes the 1-based level index in the level sequence and
 	-- can only go backwards, it appears.
+
+	-- todo: require all living players to agree
+	-- todo: go back 5 levels
 	StateControl.changeLevel(3, 0)
 end)
 

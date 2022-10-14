@@ -1,6 +1,9 @@
 local LevelGenerator = require "necro.game.level.LevelGenerator"
+local RNG = require "necro.game.system.RNG"
 
 local LevelUtil = require "DungeonModes.LevelUtil"
+
+local rngChannel = 2798
 
 print("-- Dungeon Modes Startup --")
 
