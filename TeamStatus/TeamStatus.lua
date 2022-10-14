@@ -14,6 +14,8 @@ local FileIO = require "system.game.FileIO"
 
 -- Have we told this client "Safe!" since last level?
 local safeNotified = false
+-- Have we told this client they are the last one?
+local lastNotified = false
 
 local stateText = ""
 
@@ -60,12 +62,17 @@ local function updateDoomState()
 			dead = dead + 1
 		elseif player.descent and player.descent.active then
 			inStairs = inStairs + 1
+		elseif player.spectator and player.spectator.active then
+			-- don't count spectators (unless dead or in stairs)
+			goto continue
 		else
 			alive = alive + 1
 			table.insert(alivePlayers, player)
 		end
 
 		totalCount = totalCount + 1
+
+		::continue::
 	end
 
 	-- print("states: ", alive, dead, inStairs)
@@ -79,12 +86,13 @@ local function updateDoomState()
 			safeNotified = false
 		end
 
-		if alive == 1 and inStairs == 0 then
+		if alive == 1 and inStairs == 0 and not lastNotified then
 			notify(alivePlayers, {
 				text="Last man standing!",
 				size=15,
 				duration=4,
 			})
+			lastNotified = true
 		end
 
 	end
@@ -100,12 +108,11 @@ end
 
 event.levelLoad.add("LevelInit", {order="music"}, function (ev)
 	safeNotified = false
-	updateDoomState()
+	lastNotified = false
 end)
 
 event.objectDeath.add("NoteDeath", {order="kill", sequence=10}, function (ev)
 	if ev.entity and ev.entity.playableCharacter then
-		-- print("death", ev.entity.name, ev.entity.killable)
 
 		-- Show cause of death
 		local causeStr = "Dead!"
@@ -122,31 +129,38 @@ event.objectDeath.add("NoteDeath", {order="kill", sequence=10}, function (ev)
 			duration=6,
 			distance=-24,
 		})
-
-		updateDoomState()
 	end
 end)
 
-
-event.objectSpectate.add("NoteSpectate", {order="spectator"}, function (ev)
-	print("objectSpectate", ev)
+-- I  initially tried to use a bunch of event listeners, but there were funny corner cases.
+-- I have better things to do with my time than try to figure out what's wrong, especially with
+-- the lack of documentation.
+-- So just update every tick.
+event.tick.add("Update", {order="hud"}, function(ev)
 	updateDoomState()
 end)
 
-event.objectUnspectate.add("NoteUnspectate", {order="player"}, function (ev)
-	print("objectUnspectate", ev)
-	updateDoomState()
-end)
+-- event.objectSpectate.add("NoteSpectate", {order="spectator", sequence=10}, function (ev)
+-- 	print("objectSpectate", ev)
+-- 	updateDoomState()
+-- end)
+
+-- event.objectUnspectate.add("NoteUnspectate", {order="player"}, function (ev)
+-- 	print("objectUnspectate", ev, ev.entity)
+-- 	updateDoomState()
+-- end)
 
 -- leave level
 event.objectDescentEnd.add("NoteDescend", {order="exitLevel", sequence=-10}, function (ev)
+	-- print("objectDescentEnd", ev, ev.entity)
 	updateDoomState()
 end)
 
---start new level
-event.gameStateLevel.add("NoteLevelStart", {order="initLoop", sequence=10}, function (ev)
-	updateDoomState()
-end)
+-- --start new level
+-- event.gameStateLevel.add("NoteLevelStart", {order="initLoop", sequence=10}, function (ev)
+-- 	print("gameStateLevel")
+-- 	updateDoomState()
+-- end)
 
 event.render.add("Display", {order="hud"}, function ()
 	-- if Menu.getCurrent() then return end
@@ -154,8 +168,8 @@ event.render.add("Display", {order="hud"}, function ()
 	local scale = UI.getScaleFactor()
 	-- Try to draw this just above where the player list would show:
 	UI.drawText({
-		x=40 * scale,
-		y=30 * scale,
+		x=46 * scale,
+		y=36 * scale,
 		text=stateText,
 		font=UI.Font.MEDIUM,
 		size=50,

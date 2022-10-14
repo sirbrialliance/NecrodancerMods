@@ -89,8 +89,11 @@ Team Status
 -------------------------------------------------------------------------
 
 - Things:
-	- Remote player died, no update on either device
-		- and go to next level and only one is alive?
+	- xx Server sepctate, still shows alive
+	- xx jump in a hole, shows as no state
+	- xx Remote player died, no update on either device
+		- xx and go to next level and only one is alive?
+	- xx need to adjust GUI size/position right
 
 
 - Notes:

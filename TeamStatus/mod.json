@@ -1,7 +1,7 @@
 {
 	"namespace": "TeamStatus",
 	"displayName": "Team Status",
-	"version": "0.0.1",
+	"version": "0.0.4",
 	"synchronyVersion": "3.1.5",
 	"description": "HUD and notifications that tell you how your teammates are faring.\n\nIncludes notifications when the first player gets to the stairs (or a trapdoor) and if you become the last man standing!",
 	"author": "sirbrialliance",
@@ -11,9 +11,9 @@
 	"banner": "TeamStatusBanner.png",
 	"tags": [],
 	"name": "TeamStatus_io_2396696",
-	"homepageURL": "https://mod.io/g/crypt/m/teamstatus",
+	"homepageURL": "https://mod.io/g/crypt/m/TeamStatus",
 	"modioID": "2396696",
 	"modioUserID": 13936341,
-	"pendingVersion": "0.0.1",
+	"pendingVersion": "0.0.4",
 	"visibility": 2
 }
