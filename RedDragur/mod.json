@@ -1,0 +1,14 @@
+{
+	"namespace": "RedDragur",
+	"displayName": "Red Dragur",
+	"version": "0.0.1",
+	"synchronyVersion": "3.1.5",
+	"description": "Basically Chaunter posessing a red dragon as a character. Lose health over time, lose the capture and you die.\nFireballs use facing direction insted of slot-per-direction.",
+	"author": "sirbrialliance",
+	"dependencies": {},
+	"api": {"scriptPath":""},
+	"icon": "RedDragurIcon.png",
+	"banner": "RedDragurBanner.png",
+	"tags": [],
+	"name": "RedDragur"
+}

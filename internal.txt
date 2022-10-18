@@ -126,7 +126,8 @@ Modding API notes:
 	- Custom modes: extraMode.Type.extend
 	- To include file: have the included return something, then require "ModPrefix.filenamebase"
 	- Probably should restart the game anytime you change mod.json, doens't seem to live reload
-
+	- Okay, so fooComponent = false actually means "I specifically don't have this component.", not "I have this and there are no parameters,"
+	- rhythm.getEffectiveSpeed(playerID)
 
 -------------------------------------------------------------------------
 Team Status
@@ -154,5 +155,25 @@ Team Status
 		- print("dirs", FileIO.listFiles("", FileIO.List.RECURSIVE, FileIO.List.DIRECTORIES))
 		- print("files", FileIO.listFiles("ext/gui", FileIO.List.RECURSIVE, FileIO.List.FILES))
 
+-------------------------------------------------------------------------
+Red Dragur
+-------------------------------------------------------------------------
 
+- xx traps
+- xx start with wrong health amount?
+- xx dig sound, heal sound
 
+- damage over time and HUD
+	- xx kill: +beats
+	- xx countdownReset: 16 for run out, 0 for kill/beats
+	- xx no reset on level transition
+	- no +beats for item use
+	- Start level with 24 beats
+	- damageCountdown can't get above countdownReset value?
+
+- can't open skin customizer, get error
+
+- render order (on top of walls?)
+
+- zz posses outline
+- zz no beats used when you can't move
