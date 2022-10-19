@@ -152,7 +152,7 @@ local components = {
 	------------ Rules ------------
 	health = {
 		maxHealth = 6,
-		health = 7, -- todo: we start missing half a heart 'cuz of equipping crown of thorns
+		health = 7, -- we start missing half a heart 'cuz of equipping crown of thorns
 	},
 	damageCountdown = {
 		countdown = 24,
@@ -164,14 +164,6 @@ local components = {
 	RedDragur_bloodlustTimer = {
 		killBeatsEarned = 4,
 	},
-	-- Sync_possessableDelayOverride = {},
-	-- Sync_possessableTimer = {
-	-- 	beatsAfterDamage = 12,
-	-- 	damage = 1,
-	-- 	damageType = 16455,
-	-- 	idleBeats = 0,
-	-- 	remainingBeats = 24
-	-- },
 	RedDragur_fixMoveDelay = {},
 	actionDelay = {
 		actions = {
@@ -233,7 +225,9 @@ local components = {
 		color = 1000,
 		hideEyes = true
 	},
-	characterWithAttachment = false,
+	-- It's easiest to just get rid of characterWithAttachment, but it breaks the "Change Skin" menu.
+	-- So instead of characterWithAttachment = false, we do Voodoo with RedDragurHead instead.
+	-- Mind, changing the dragon's skin doens't work, but I don't care to try to make it work.
 	facingMirrorX = {
 		directions = {
 			 -1, -1,
@@ -299,7 +293,17 @@ local components = {
 		frameX = 2,
 		frameY = 1
 	},
-	rowOrder = {z = 56},
+	rowOrder = {
+		-- for the game data I inspected, it's 56, which is too high.
+		z = 40,
+	},
+
+	-- fixme: So picking up leather armor turns the dragon black (spriteSheet.frameY = 2).
+	-- Haven't found a way to address that w/out making a new sprite sheet.
+		-- itemArmorBodySpriteRow = {row = 0},
+		-- characterEquipmentSpriteRow = {defaultBodyRow = 3},
+		-- spriteSheetRowWrap = {frames = 4},
+
 	bounceTweenOnAttack = {tween = 2},
 	soundHit = { -- soundHit
 		sound = "generalHit"
@@ -346,6 +350,14 @@ local components = {
 	},
 }
 
+-- Hacks to keeps the dragon from having a glitched-out extra head but still not break the skins menu.
+-- (I guess extending a player makes a {player}Head entitiy that magically appears and follows the player
+-- around.)
+CustomEntities.register({
+	name = "RedDragurHead",
+	gameObject = {},
+	sprite = {width = 0, height = 0},
+})
 
 CustomEntities.extend({
 	name = "RedDragur",
