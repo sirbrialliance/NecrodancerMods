@@ -1,10 +1,16 @@
 local Components = require "necro.game.data.Components"
 local CustomEntities = require "necro.game.data.CustomEntities"
 local Action = require "necro.game.system.Action"
--- local OutlineFilter = require "necro.render.filter.OutlineFilter"
 local Damage = require "necro.game.system.Damage"
 local Attack = require "necro.game.character.Attack"
 local Entities = require "system.game.Entities"
+local Spell = require "necro.game.spell.Spell"
+local CommonSpell = require "necro.game.data.spell.CommonSpell"
+local AnimationTimer = require "necro.render.AnimationTimer"
+local Ability = require "necro.game.system.Ability"
+local BitUtilities = require "system.utils.BitUtilities"
+
+------------ Movement, Countdown ------------
 
 -- I think certain Chaunter features are buried in Sync_possessable,
 -- so we have to emulate the behavior.
@@ -13,7 +19,9 @@ local Entities = require "system.game.Entities"
 -- Anyway, playable characters can't have Sync_possessable, the game just locks up.
 
 Components.register({
-	fixMoveDelay = {},
+	fixMoveDelay = {
+		Components.field.int("skipDelayOn", 0),
+	},
 	bloodlustTimer = {
 		Components.dependency("damageCountdown"),
 		Components.field.int("killBeatsEarned", 4),
@@ -26,6 +34,7 @@ event.turn.add("KeepMoving", {order="updateAttachments"}, function(ev)
 
 	for k, action in ipairs(ev.actionQueue) do
 		if action.entity.RedDragur_fixMoveDelay and action.ev.result == Action.Result.MOVE then
+			-- print("Move slow skip:", action.entity.beatDelay)
 			action.entity.beatDelay.counter = 0
 		end
 	end
@@ -83,64 +92,78 @@ event.turn.override("reduceDamageCountdown", {sequence=1}, function(orig, ev)
 	end
 end)
 
+------------ Fireball Spell ------------
+
+Components.register({
+	directionalDragonFireball = {},
+	-- fixSpellDelay = {},
+})
+
+CommonSpell.registerSpell("DragonFireballStart", {
+	soundSpellcast = {sound = "dragonPrefire"},
+	-- RedDragur_fixSpellDelay = {},
+})
 
 CustomEntities.extend({
 	name = "DragonFireball",
-	template = CustomEntities.template.item("spell_fireball"),
+	template = CustomEntities.template.item(),
 	components = {
 		friendlyName = {name = "Dragon Fire"},
 		itemHintLabel = {text = "Dragon Fire"},
 		itemSlot = {name = "spell"},
-		itemCastOnUse = {spell = "SpellcastFireballDragon"},
+
+		RedDragur_directionalDragonFireball = {},
+		itemCastOnUse = {spell = "RedDragur_DragonFireballStart"},
 		spellCooldownKills = {cooldown = 0},
 		spellCooldownTime = {cooldown = 3},
 		spellBloodMagic = false,
-		spellUseCasterFacingDirection = {},
+		itemBanInnateSpell = {},
+		itemNonRemovable = {},
+
+		itemHUDCooldown = {},
+		itemActivablePromptHUD = {text = "Select Direction"},
+		itemActivable = {
+			activeSlotImage = "mods/Sync/gfx/hud/hud_slot_dash_direction.png"
+		},
+		itemActivableShowSlotLabelHUD = {},
 		sprite = {
 			texture = "mods/RedDragur/DragonFireball.png",
 			width = 24,
 			height = 24
 		},
-
-		voiceSpellTypeSuffix = false,
-		itemPoolChest = false,
-		itemPoolRedChest = false,
-		itemPoolPurpleChest = false,
-		itemPoolBlackChest = false,
-		itemPoolLockedChest = false,
-		itemPoolShop = false,
-		itemPoolLockedShop = false,
-		itemPoolUrn = false,
-		itemPoolSecret = false,
-		itemPoolFood = false,
-		itemPoolHearts = false,
-		itemPoolCrate = false,
-		itemPoolWar = false,
-		itemPoolUncertainty = false,
-		itemPoolEnchant = false,
-		itemPoolNeed = false,
-		itemPoolVault = false,
-		itemExcludeFromTransmute = false,
-		itemExcludeFromBossChests = false,
-		itemBanHealthlocked = false,
-		itemBanWeaponlocked = false,
-		itemBanShoplifter = false,
-		itemBanNoDamage = false,
-		itemBanDiagonal = false,
-		itemBanMoveAmplifier = false,
-		itemBanPoverty = false,
-		itemBanKillPoverty = false,
-		itemBanPacifist = false,
-		itemBanInnateSpell = false,
-		itemBanAria = false,
-		itemBanDorian = false,
-		itemBanEli = false,
-		itemBanDiamond = false,
-		itemBanMary = false,
-		itemBanTempo = false,
 	},
 })
 
+event.itemActivate.add("fireChargeUp", {order = "sound", filter = {"RedDragur_directionalDragonFireball"}}, function(ev)
+	local move = ev.holder.RedDragur_fixMoveDelay
+	if move then
+		move.skipDelayOn = ev.holder.beatCounter.counter + 1
+		-- print("chargeup", ev, move)
+	end
+	-- AnimationTimer.play(ev.holder.id, "RedDragur_fireChargeUp")
+end)
+
+-- This is an ugly mess. Still not sure why beatDelayBypass stopped working.
+event.objectCheckAbility.add("fixSpellDelay", {sequence = -10, order = "beatDelayBypass", filter = {"RedDragur_fixMoveDelay"}}, function(ev)
+	local move = ev.entity.RedDragur_fixMoveDelay
+	-- print("check ability", move.skipDelayOn, ev.entity.beatCounter.counter)
+	if move.skipDelayOn == ev.entity.beatCounter.counter then
+		ev.flags = BitUtilities.set(ev.flags, 5, 0) -- Ability.Flag.CHECK_BEAT_DELAY
+	end
+end)
+
+
+
+event.holderDirection.add("directionalFireball", {
+	order = "actionDelay", sequence = -10,-- trigger before beatDelay slows us
+	filter = {"itemActivable", "RedDragur_directionalDragonFireball"}
+}, function(ev)
+	if ev.entity.itemActivable.active then
+		Spell.cast(ev.holder, "SpellcastFireballDragon", ev.direction)
+		ev.result = Action.Result.SPELL
+		ev.entity.itemActivable.active = false
+	end
+end)
 
 
 ------------ Character ------------
@@ -149,7 +172,7 @@ local components = {
 	------------ Character Base ------------
 	friendlyName = {name = "Red Dragur"},
 	textCharacterSelectionMessage = {
-		text = "Basically Chaunter posessing a red dragon.\nLose HP over time, kill to regen.\nLose the capture and you die."
+		text = "Like Chaunter posessing a red dragon.\nLose HP over time, kill to regen\nor succumb to your bloodlust and die."
 	},
 	playableCharacter = {
 		lobbyOrder = 100,
@@ -179,16 +202,16 @@ local components = {
 		countdownReset = 16,--takes place of damageCountdown.countdownReset
 	},
 	RedDragur_fixMoveDelay = {},
-	actionDelay = {
-		actions = {
-			[13] = {
-				beatDelay = 1,
-				sound = "dragonPrefire"
-			},
-		},
-		currentAction = 0,
-		delay = 0
-	},
+	-- actionDelay = {
+	-- 	actions = {
+	-- 		[13] = {
+	-- 			beatDelay = 0,
+	-- 			sound = "dragonPrefire"
+	-- 		},
+	-- 	},
+	-- 	currentAction = 0,
+	-- 	delay = 0
+	-- },
 	dig = {
 		innateShovel = false,
 		isPlayer = false,
@@ -206,14 +229,11 @@ local components = {
 		counter = 0,
 		interval = 2
 	},
-	beatDelayBypass = {
-		actions = {
-			[13] = true
-		}
-	},
-	inventoryCursedSlots = {
-		slots = {spell = true}
-	},
+	-- beatDelayBypass = {
+	-- 	actions = {
+	-- 		[13] = true
+	-- 	}
+	-- },
 	attackable = {
 		-- we don't want Attack.Flag.TRAP
 		currentFlags = 1827,
@@ -244,7 +264,7 @@ local components = {
 	-- Mind, changing the dragon's skin doens't work, but I don't care to try to make it work.
 	facingMirrorX = {
 		directions = {
-			 -1, -1,
+			-1, -1,
 			[4] = 1,
 			[5] = 1,
 			[6] = 1,
@@ -311,13 +331,11 @@ local components = {
 		-- for the game data I inspected, it's 56, which is too high.
 		z = 40,
 	},
-
 	-- fixme: So picking up leather armor turns the dragon black (spriteSheet.frameY = 2).
 	-- Haven't found a way to address that w/out making a new sprite sheet.
 		-- itemArmorBodySpriteRow = {row = 0},
 		-- characterEquipmentSpriteRow = {defaultBodyRow = 3},
 		-- spriteSheetRowWrap = {frames = 4},
-
 	bounceTweenOnAttack = {tween = 2},
 	soundHit = { -- soundHit
 		sound = "generalHit"
@@ -346,9 +364,15 @@ local components = {
 	voiceGrab = false,
 	voiceReveal = false,
 	voiceHeal = false,
-	actionDelayAnimation = {
-		frames = {5, 6, 7},
-	},
+	-- actionDelayAnimation = {
+	-- 	frames = {5, 6, 7},
+	-- },
+	-- customAnimation = {
+	-- 	frames = {
+	-- 		RedDragur_fireChargeUp = {5, 6, 7},
+	-- 		-- 5, 6, 7,
+	-- 	},
+	-- },
 	moveResultAnimation = {
 		active = false,
 		result = 4, -- after spell cast

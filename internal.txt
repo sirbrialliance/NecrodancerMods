@@ -113,6 +113,8 @@ Ideas:
 
 	- Look into making it a custom mode shrine instead?
 
+	- spellcastAggroAllEnemies
+
 Modding API notes:
 	- Level.Data's tile numbers: 0 = void, 1 = first item in tileNames
 	- Level.Data's bounds is x/y/w/h, not x1/y1/x2/y2
@@ -172,8 +174,13 @@ Red Dragur
 	- xx no +beats for item use
 	- xx Start level with 24 beats
 	- xx damageCountdown can't get above countdownReset value?
-
-- two-step spell?
-
 - zz posses outline
 - zz no beats used when you can't move
+
+
+- two-step spell?
+	- xx directional
+	- correct animation
+
+- icons
+
