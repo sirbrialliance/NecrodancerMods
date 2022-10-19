@@ -180,7 +180,9 @@ Red Dragur
 
 - two-step spell?
 	- xx directional
-	- correct animation
+	- and can overlap self on spell
+
+	- correct animation **shrug**
 
 - icons
 

@@ -94,14 +94,15 @@ end)
 
 ------------ Fireball Spell ------------
 
+-- This was a lot simpler when we sould use the original methods instead of aiming spells.
+-- ...but...aiming spells!
+
 Components.register({
 	directionalDragonFireball = {},
-	-- fixSpellDelay = {},
 })
 
 CommonSpell.registerSpell("DragonFireballStart", {
 	soundSpellcast = {sound = "dragonPrefire"},
-	-- RedDragur_fixSpellDelay = {},
 })
 
 CustomEntities.extend({
@@ -140,7 +141,9 @@ event.itemActivate.add("fireChargeUp", {order = "sound", filter = {"RedDragur_di
 		move.skipDelayOn = ev.holder.beatCounter.counter + 1
 		-- print("chargeup", ev, move)
 	end
-	-- AnimationTimer.play(ev.holder.id, "RedDragur_fireChargeUp")
+
+	--todo: trigger charge up animation. No clue how to do that.
+	-- AnimationTimer.play(ev.holder.id, "___")
 end)
 
 -- This is an ugly mess. Still not sure why beatDelayBypass stopped working.
@@ -153,9 +156,8 @@ event.objectCheckAbility.add("fixSpellDelay", {sequence = -10, order = "beatDela
 end)
 
 
-
 event.holderDirection.add("directionalFireball", {
-	order = "actionDelay", sequence = -10,-- trigger before beatDelay slows us
+	order = "actionDelay", sequence = -10,
 	filter = {"itemActivable", "RedDragur_directionalDragonFireball"}
 }, function(ev)
 	if ev.entity.itemActivable.active then
@@ -206,11 +208,15 @@ local components = {
 	-- 	actions = {
 	-- 		[13] = {
 	-- 			beatDelay = 0,
-	-- 			sound = "dragonPrefire"
 	-- 		},
 	-- 	},
 	-- 	currentAction = 0,
 	-- 	delay = 0
+	-- },
+	-- beatDelayBypass = {
+	-- 	actions = {
+	-- 		[13] = true
+	-- 	}
 	-- },
 	dig = {
 		innateShovel = false,
@@ -229,11 +235,6 @@ local components = {
 		counter = 0,
 		interval = 2
 	},
-	-- beatDelayBypass = {
-	-- 	actions = {
-	-- 		[13] = true
-	-- 	}
-	-- },
 	attackable = {
 		-- we don't want Attack.Flag.TRAP
 		currentFlags = 1827,
@@ -364,15 +365,6 @@ local components = {
 	voiceGrab = false,
 	voiceReveal = false,
 	voiceHeal = false,
-	-- actionDelayAnimation = {
-	-- 	frames = {5, 6, 7},
-	-- },
-	-- customAnimation = {
-	-- 	frames = {
-	-- 		RedDragur_fireChargeUp = {5, 6, 7},
-	-- 		-- 5, 6, 7,
-	-- 	},
-	-- },
 	moveResultAnimation = {
 		active = false,
 		result = 4, -- after spell cast
@@ -386,6 +378,7 @@ local components = {
 			times = {0, 0.5}
 		},
 	},
+
 }
 
 -- Hacks to keeps the dragon from having a glitched-out extra head but still not break the skins menu.
