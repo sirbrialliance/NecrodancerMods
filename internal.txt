@@ -165,17 +165,15 @@ Red Dragur
 - xx can't open skin customizer, get error
 - xx render order (on top of walls?)
 - zz got leather armor? turn black
-
-- damage over time and HUD
+- xx damage over time and HUD
 	- xx kill: +beats
 	- xx countdownReset: 16 for run out, 0 for kill/beats
 	- xx no reset on level transition
+	- xx no +beats for item use
+	- xx Start level with 24 beats
+	- xx damageCountdown can't get above countdownReset value?
 
-	- no +beats for item use
-	- Start level with 24 beats
-	- damageCountdown can't get above countdownReset value?
-
-
+- two-step spell?
 
 - zz posses outline
 - zz no beats used when you can't move

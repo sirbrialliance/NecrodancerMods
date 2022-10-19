@@ -17,6 +17,7 @@ Components.register({
 	bloodlustTimer = {
 		Components.dependency("damageCountdown"),
 		Components.field.int("killBeatsEarned", 4),
+		Components.field.int("countdownReset", 16),
 	},
 })
 
@@ -60,16 +61,27 @@ event.objectKill.override("resetDamageCountdown", {sequence=1, filter="RedDragur
 	end
 end)
 
--- todo: emulate Chaunter and don't count down on beats we can't move.
--- event.turn.override("reduceDamageCountdown", {sequence=1}, function(orig, ev)
--- 	for k, action in ipairs(ev.actionQueue) do
--- 		if action.entity.RedDragur_bloodlustTimer then
--- 			print("action.entity.damageCountdown", action.entity.damageCountdown)
--- 		end
--- 	end
+event.inventoryCollectItem.override("resetDamageCountdown", {sequence=1, filter="RedDragur_bloodlustTimer"}, function(orig, ev)
+	-- don't reset countdown on getting an item if we have RedDragur_bloodlustTimer
+end)
 
--- 	orig(ev)
--- end)
+event.itemConsume.override("resetDamageCountdown", {sequence=1, filter="RedDragur_bloodlustTimer"}, function(orig, ev)
+	-- don't reset countdown on eating if we have RedDragur_bloodlustTimer
+end)
+
+
+-- todo: emulate Chaunter and don't count down on beats we can't move.
+event.turn.override("reduceDamageCountdown", {sequence=1}, function(orig, ev)
+	orig(ev)
+
+	for k, action in ipairs(ev.actionQueue) do
+		local player = action.entity
+		if player.RedDragur_bloodlustTimer and player.damageCountdown.countdown == player.damageCountdown.countdownReset then
+			-- just took damage, adjust the reset value
+			player.damageCountdown.countdown = player.RedDragur_bloodlustTimer.countdownReset
+		end
+	end
+end)
 
 
 CustomEntities.extend({
@@ -156,13 +168,15 @@ local components = {
 	},
 	damageCountdown = {
 		countdown = 24,
-    countdownReset = 16,
+		--soooo...if countdown > countdownReset the HUD won't show higher than countdownReset
+    countdownReset = 999,-- so we'll manage it manually
     damage = 1,
     killerName = "Bloodlust",
     type = Damage.Type.SELF_DAMAGE,
 	},
 	RedDragur_bloodlustTimer = {
 		killBeatsEarned = 4,
+		countdownReset = 16,--takes place of damageCountdown.countdownReset
 	},
 	RedDragur_fixMoveDelay = {},
 	actionDelay = {
